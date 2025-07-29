@@ -6,10 +6,23 @@
 parameters:
 
 services:
+      
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
+        bind: 
+            # $jwtSecret: '%env(JWT_SECRET)%'
+            # $jwtSecretKey: 'lalala'
+            # '$jwtSecretKey': '%kernel.project_dir%/app/var/jwt/private.pem' # path to the secret key OR raw secret key, required for creating tokens
+            # $jwtPublicKey: '%kernel.project_dir%/app/var/jwt/public.pem'
+            'string $jwtSecretKey': '%env(resolve:JWT_SECRET_KEY)%'
+         
+    # acme_api.encoder.tk_jwt_encoder:
+    #     class: App\Encoder\TKJWTEncoder
+    #     autowire: true
+    # App\Encoder\TKJWTEncoder:
+    #    autowire: true
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
@@ -19,6 +32,15 @@ services:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
-
+        # tags: ['controller.service_arguments']
+    
+    App\EventListener\CorsListener:
+        autowire: true
+        autoconfigure: false
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 4096 }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+    
+    
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
