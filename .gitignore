@@ -15,10 +15,14 @@ npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
 
+/app/var/jwt/
 /zz_aux
 /takiondb
 takion-backup.sql
+takion.sql
 test.sh
 /.docker/mysql
 /.docker/nginx
 /.docker/php
+/pgloader
+/takion_postgres_backup.dump
