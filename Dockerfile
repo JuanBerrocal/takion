@@ -1,24 +1,36 @@
 # This is a Dockerfile to be deplyed in render
 
 # First stage
-FROM composer:2 AS build
+FROM php:8.4.6-fpm AS build
+
+# Extensions needed for Symfony and composer
+RUN apt-get update && apt-get install -y \
+    git unzip curl libpq-dev libzip-dev zip libpng-dev libjpeg-dev libfreetype6-dev \
+    && docker-php-ext-install pdo pdo_pgsql zip
+
+# Installs composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 WORKDIR /app
-COPY . .
 
-RUN composer install --no-dev --optimize-autoloader
+# Copies configuration files
+COPY composer.json composer.lock ./
+
+# Installs PHP dependencies without executing database scripts.
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-scripts
+
+# Copies the rest.
+COPY . .
 
 # Second stage
 FROM php:8.4.6-fpm
 
-RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/zz-docker.conf
-
-# Extensions needed for Symfony
+# Extensions needed for Symfony and composer
 RUN apt-get update && apt-get install -y \
-    nginx \
-    supervisor \
-    git unzip curl libpq-dev libzip-dev zip libpng-dev libjpeg-dev libfreetype6-dev \
+    nginx supervisor git unzip curl libpq-dev libzip-dev zip libpng-dev libjpeg-dev libfreetype6-dev \
     && docker-php-ext-install pdo pdo_pgsql zip
+
+RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/zz-docker.conf
 
 WORKDIR /var/www/html
 
