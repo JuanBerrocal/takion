@@ -43,7 +43,8 @@ COPY .docker/render/default.conf /etc/nginx/conf.d/default.conf
 COPY .docker/render/supervisor.conf /etc/supervisord.conf
 
 # Gives permissions to www-data user (symfony).
-RUN chown -R www-data:www-data /var/www/html/var \
+RUN  mkdir -p /var/www/html/var \
+    && chown -R www-data:www-data /var/www/html/var \
     && chmod -R 755 /var/www/html/var
 RUN mkdir -p /var/www/html/var/log && chown -R www-data:www-data /var/www/html/var/log
 
