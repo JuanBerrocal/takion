@@ -18,6 +18,7 @@ yarn-error.log
 /app/var/jwt/
 /zz_aux
 /takiondb
+.env
 takion-backup.sql
 takion.sql
 test.sh

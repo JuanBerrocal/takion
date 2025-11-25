@@ -85,7 +85,7 @@ class LoginFormAuthenticator extends AbstractAuthenticator  implements Authentic
              $myToken,                                          // Cookie content
              time() + 86400,                                    // Cookie expiration date
              "/",                                               // Path
-             "localhost",                                       // Domain
+             null,                                              // Domain ('localhost' for local deploy, null for remote deploy)
              true,                                              // Secure
              true,                                              // HttpOnly
              true,                                              // Raw
