@@ -89,7 +89,7 @@ class LoginFormAuthenticator extends AbstractAuthenticator  implements Authentic
              true,                                              // Secure
              true,                                              // HttpOnly
              true,                                              // Raw
-             'none'));                                          // SameSite policy
+             'None'));                                          // SameSite policy
 
         return $res;
     }
