@@ -88,7 +88,7 @@ class LoginFormAuthenticator extends AbstractAuthenticator  implements Authentic
              null,                                              // Domain ('localhost' for local deploy, null for remote deploy)
              true,                                              // Secure
              true,                                              // HttpOnly
-             true,                                              // Raw
+             false,                                              // Raw
              'None'));                                          // SameSite policy
 
         return $res;
