@@ -1,5 +1,7 @@
 <?php
 
+error_log('*** MENSAJE DE PRUEBA: index.php EJECUTADO ***'); 
+
 use App\Kernel;
 
 
