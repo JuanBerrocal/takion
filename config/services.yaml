@@ -34,12 +34,13 @@ services:
             - '../src/Kernel.php'
         # tags: ['controller.service_arguments']
     
-    App\EventListener\CorsListener:
-        autowire: true
-        autoconfigure: false
-        tags:
-            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 10000 }
-            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
+    # We dont use this for render
+    #App\EventListener\CorsListener:
+    #    autowire: true
+    #    autoconfigure: false
+    #    tags:
+    #        - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 10000 }
+    #        - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse }
     
     
     # add more service definitions when explicit configuration is needed

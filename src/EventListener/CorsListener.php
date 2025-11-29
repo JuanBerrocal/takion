@@ -1,5 +1,5 @@
 <?php
-
+/*
 namespace App\EventListener;
 
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -18,10 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
     public function onKernelRequest(RequestEvent $event): void
     {
         
-       /* if (!$event->isMainRequest()) {
-            error_log('No es un evento principal');
-            return;
-        }*/
+  
         error_log('CorsListener: onKernelRequest ejecutado');
         $request = $event->getRequest();
         $origin = $request->headers->get('Origin');
@@ -34,7 +31,6 @@ use Symfony\Component\HttpFoundation\Response;
                 $response->headers->set('Access-Control-Allow-Origin', $origin);
                 $response->headers->set('Access-Control-Allow-Credentials', 'true');
                 $response->headers->set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-                //$response->headers->set('Access-Control-Allow-Headers', 'X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method, Authorization');
                 
                 $requestedHeaders = $request->headers->get('Access-Control-Request-Headers');
                 if ($requestedHeaders) {
@@ -73,4 +69,4 @@ use Symfony\Component\HttpFoundation\Response;
         }
     }
 
- }
+ }*/
