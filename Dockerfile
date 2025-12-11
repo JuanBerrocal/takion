@@ -22,6 +22,9 @@ RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader -
 # Copies the rest.
 COPY . .
 
+# Build Symfony cache here (NO .env)
+RUN APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear --no-warmup
+
 # Second stage
 FROM php:8.4.6-fpm
 
@@ -36,8 +39,9 @@ WORKDIR /var/www/html
 
 COPY --from=build /app /var/www/html
 
-RUN COMPOSER_ALLOW_SUPERUSER=1 composer run-script post-install-cmd || true
-RUN php bin/console cache:clear --no-warmup || true
+# composer doesnt exists any longer at this stage, so these lines will fail.
+# RUN COMPOSER_ALLOW_SUPERUSER=1 composer run-script post-install-cmd || true
+# RUN php bin/console cache:clear --no-warmup || true
 
 RUN rm /etc/nginx/sites-enabled/default
 
