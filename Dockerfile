@@ -23,7 +23,7 @@ RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader -
 COPY . .
 
 # Build Symfony cache here (NO .env)
-RUN APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear --no-warmup
+RUN rm -f .env && APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear --no-warmup
 
 # Second stage
 FROM php:8.4.6-fpm
