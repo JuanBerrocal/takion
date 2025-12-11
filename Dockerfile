@@ -17,7 +17,10 @@ WORKDIR /app
 COPY composer.json composer.lock ./
 
 # Installs PHP dependencies without executing database scripts.
-RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-scripts
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader 
+
+# Whith the -no-scripts flag the command doesnt work.
+# RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-scripts
 
 # Copies the rest.
 COPY . .
@@ -42,11 +45,19 @@ COPY .docker/render/php.ini /usr/local/etc/php/conf.d/99-custom.ini
 COPY .docker/render/default.conf /etc/nginx/conf.d/default.conf
 COPY .docker/render/supervisor.conf /etc/supervisord.conf
 
-# Gives permissions to www-data user (symfony).
-RUN  mkdir -p /var/www/html/var \
-    && chown -R www-data:www-data /var/www/html/var \
-    && chmod -R 755 /var/www/html/var
-RUN mkdir -p /var/www/html/var/log && chown -R www-data:www-data /var/www/html/var/log
+# Gives permissions to www-data user (symfony) to the entire folder.
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# Cache cleaning.
+RUN php bin/console cache:clear --env=prod
+RUN php bin/console cache:warmup --env=prod
+
+# No needed any longer.
+# RUN  mkdir -p /var/www/html/var \
+#    && chown -R www-data:www-data /var/www/html/var \
+#    && chmod -R 755 /var/www/html/var
+# RUN mkdir -p /var/www/html/var/log && chown -R www-data:www-data /var/www/html/var/log
 
 # Expose port 80 to serve HTML (localhost)
 #EXPOSE 80
