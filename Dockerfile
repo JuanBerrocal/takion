@@ -16,11 +16,8 @@ WORKDIR /app
 # Copies configuration files
 COPY composer.json composer.lock ./
 
-# Installs PHP dependencies without executing database scripts.
-RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader 
-
-# Whith the -no-scripts flag the command doesnt work.
-# RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-scripts
+# Installs PHP dependencies.  It doesnt execute scripts at the first stage.
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-scripts
 
 # Copies the rest.
 COPY . .
@@ -38,6 +35,9 @@ RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/zz-docker.conf
 WORKDIR /var/www/html
 
 COPY --from=build /app /var/www/html
+
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer run-script post-install-cmd || true
+RUN php bin/console cache:clear --no-warmup || true
 
 RUN rm /etc/nginx/sites-enabled/default
 
