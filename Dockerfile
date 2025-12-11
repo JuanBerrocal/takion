@@ -49,10 +49,6 @@ COPY .docker/render/supervisor.conf /etc/supervisord.conf
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Cache cleaning.
-RUN php bin/console cache:clear --env=prod
-RUN php bin/console cache:warmup --env=prod
-
 # No needed any longer.
 # RUN  mkdir -p /var/www/html/var \
 #    && chown -R www-data:www-data /var/www/html/var \
