@@ -23,7 +23,11 @@ RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader -
 COPY . .
 
 # Build Symfony cache here (NO .env)
-RUN touch .env && APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear --no-warmup
+#RUN touch .env && APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear --no-warmup
+RUN rm -rf var/cache/* \
+    && APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear --no-warmup \
+    && APP_ENV=prod APP_DEBUG=0 php bin/console cache:warmup
+
 
 # Second stage
 FROM php:8.4.6-fpm
@@ -37,6 +41,7 @@ RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/zz-docker.conf
 
 WORKDIR /var/www/html
 
+# Copy app from build
 COPY --from=build /app /var/www/html
 
 # composer doesnt exists any longer at this stage, so these lines will fail.
@@ -46,15 +51,15 @@ COPY --from=build /app /var/www/html
 # Erases .env file to prevent symfony to crash. 
 RUN rm -f /var/www/html/.env
 
-RUN rm /etc/nginx/sites-enabled/default
-
-COPY .docker/render/php.ini /usr/local/etc/php/conf.d/99-custom.ini
-COPY .docker/render/default.conf /etc/nginx/conf.d/default.conf
-COPY .docker/render/supervisor.conf /etc/supervisord.conf
-
 # Gives permissions to www-data user (symfony) to the entire folder.
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
+
+# Configuration for render/nginx
+RUN rm /etc/nginx/sites-enabled/default
+COPY .docker/render/php.ini /usr/local/etc/php/conf.d/99-custom.ini
+COPY .docker/render/default.conf /etc/nginx/conf.d/default.conf
+COPY .docker/render/supervisor.conf /etc/supervisord.conf
 
 # No needed any longer.
 # RUN  mkdir -p /var/www/html/var \
