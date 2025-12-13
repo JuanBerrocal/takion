@@ -22,11 +22,12 @@ RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader -
 # Copies the rest.
 COPY . .
 
-# Build Symfony cache here (NO .env)
+# We dont execute any Symfony code her to build Symfony cache here (NO .env)
+# If so, then Symfony doenst pass the APP_ENV variable, and then symfony starts in DEV mode, and then tries to load an .env file that doesnt exits, and then crash.
 #RUN touch .env && APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear --no-warmup
-RUN rm -rf var/cache/* \
-    && APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear --no-warmup \
-    && APP_ENV=prod APP_DEBUG=0 php bin/console cache:warmup
+#RUN rm -rf var/cache/* \
+#    && APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear --no-warmup \
+#    && APP_ENV=prod APP_DEBUG=0 php bin/console cache:warmup
 
 
 # Second stage
@@ -49,17 +50,20 @@ COPY --from=build /app /var/www/html
 # RUN php bin/console cache:clear --no-warmup || true
 
 # Erases .env file to prevent symfony to crash. 
-RUN rm -f /var/www/html/.env
+# RUN rm -f /var/www/html/.env
+
+
+# Configuration for render/nginx/supervisor
+COPY .docker/render/php.ini /usr/local/etc/php/conf.d/99-custom.ini
+COPY .docker/render/default.conf /etc/nginx/conf.d/default.conf
+COPY .docker/render/supervisor.conf /etc/supervisord.conf
+
+#Clean default nginx configuration.
+RUN rm /etc/nginx/sites-enabled/default || true
 
 # Gives permissions to www-data user (symfony) to the entire folder.
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
-
-# Configuration for render/nginx
-RUN rm /etc/nginx/sites-enabled/default
-COPY .docker/render/php.ini /usr/local/etc/php/conf.d/99-custom.ini
-COPY .docker/render/default.conf /etc/nginx/conf.d/default.conf
-COPY .docker/render/supervisor.conf /etc/supervisord.conf
 
 # No needed any longer.
 # RUN  mkdir -p /var/www/html/var \
