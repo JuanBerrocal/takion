@@ -39,8 +39,13 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install pdo pdo_pgsql zip
 
 # RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/zz-docker.conf
+# RUN printf "[www]\nlisten = 127.0.0.1:9000\nclear_env = no\n" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
-RUN printf "[www]\nlisten = 127.0.0.1:9000\nclear_env = no\n" > /usr/local/etc/php-fpm.d/zz-docker.conf
+RUN printf "[www]\n\
+listen = 127.0.0.1:9000\n\
+clear_env = no\n\
+env[APP_ENV] = prod\n\
+env[APP_DEBUG] = 0\n" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
 WORKDIR /var/www/html
 
