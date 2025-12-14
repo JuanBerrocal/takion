@@ -41,6 +41,7 @@ RUN apt-get update && apt-get install -y \
 # RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/zz-docker.conf
 # RUN printf "[www]\nlisten = 127.0.0.1:9000\nclear_env = no\n" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
+
 RUN printf "[www]\n\
 listen = 127.0.0.1:9000\n\
 clear_env = no\n\
@@ -61,6 +62,7 @@ COPY --from=build /app /var/www/html
 
 
 # Configuration for render/nginx/supervisor
+COPY .docker/render/www.conf /etc/php/8.1/fpm/pool.d/www.conf
 COPY .docker/render/php.ini /usr/local/etc/php/conf.d/99-custom.ini
 COPY .docker/render/default.conf /etc/nginx/conf.d/default.conf
 COPY .docker/render/supervisor.conf /etc/supervisord.conf
