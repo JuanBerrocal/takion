@@ -3,6 +3,7 @@
 error_log('*** MENSAJE DE PRUEBA: index.php EJECUTADO ***'); 
 
 use App\Kernel;
+use Symfony\Component\HttpFoundation\Request;
 
 
 // ** ONLY FOR DEBUGGING
