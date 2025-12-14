@@ -4,6 +4,9 @@
 use App\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // ** ONLY FOR DEBUGGING
 //error_reporting(E_ALL);
