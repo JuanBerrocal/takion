@@ -16,13 +16,37 @@ use Symfony\Component\HttpFoundation\Request;
 require_once dirname(__DIR__).'/vendor/autoload.php';
 
 $env = $_SERVER['APP_ENV'] ?? getenv('APP_ENV') ?: 'prod';
-$debug = (bool) ($_SERVER['APP_DEBUG'] ?? getenv('APP_DEBUG') ?: false);
+$debug = (bool) ($_SERVER['APP_DEBUG'] ?? getenv('APP_DEBUG') ?: true);
  
-$kernel = new Kernel($env, $debug);
+/*$kernel = new Kernel($env, $debug);
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();
-$kernel->terminate($request, $response);
+$kernel->terminate($request, $response);*/
+
+try {
+    $kernel = new Kernel($env, $debug);
+    $request = Request::createFromGlobals();
+    
+    try {
+        $response = $kernel->handle($request);
+        $response->send();
+        $kernel->terminate($request, $response);
+    } catch (\Throwable $e) {
+        // Captura errores durante la ejecución del Kernel
+        error_log('*** ERROR DURANTE HANDLE/TERMINATE ***');
+        error_log($e->__toString());
+        http_response_code(500);
+        echo 'Ocurrió un error interno. Revisa logs.';
+    }
+
+} catch (\Throwable $e) {
+    // Captura errores al inicializar el Kernel
+    error_log('*** ERROR DURANTE INICIALIZACION DEL KERNEL ***');
+    error_log($e->__toString());
+    http_response_code(500);
+    echo 'Ocurrió un error interno. Revisa logs.';
+}
 
 /*return function (array $context) {
     //return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
