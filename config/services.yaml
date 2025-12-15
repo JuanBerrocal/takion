@@ -31,6 +31,7 @@ services:
         exclude:
             - '../src/DependencyInjection/'
             - '../src/Entity/'
+            - '../src/EventListener/'
             - '../src/Kernel.php'
         # tags: ['controller.service_arguments']
     
