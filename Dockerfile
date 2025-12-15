@@ -4,9 +4,27 @@
 FROM php:8.4.6-fpm AS build
 
 # Extensions needed for Symfony and composer
+#RUN apt-get update && apt-get install -y \
+#    git unzip curl libpq-dev libzip-dev zip libpng-dev libjpeg-dev libfreetype6-dev libicu-dev g++ \
+#    && docker-php-ext-install pdo pdo_pgsql zip intl mbstring
 RUN apt-get update && apt-get install -y \
-    git unzip curl libpq-dev libzip-dev zip libpng-dev libjpeg-dev libfreetype6-dev libicu-dev g++ \
-    && docker-php-ext-install pdo pdo_pgsql zip intl mbstring
+    git unzip curl \
+    libpq-dev \
+    libzip-dev \
+    zlib1g-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libicu-dev \
+    libonig-dev \
+    pkg-config \
+    g++ \
+    && docker-php-ext-install \
+        pdo \
+        pdo_pgsql \
+        zip \
+        intl \
+        mbstring
 
 # Installs composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -34,9 +52,28 @@ COPY . .
 FROM php:8.4.6-fpm
 
 # Extensions needed for Symfony and composer
+#RUN apt-get update && apt-get install -y \
+#    nginx supervisor git unzip curl libpq-dev libzip-dev zip libpng-dev libjpeg-dev libfreetype6-dev libicu-dev g++ \
+#    && docker-php-ext-install pdo pdo_pgsql zip intl mbstring
+
 RUN apt-get update && apt-get install -y \
-    nginx supervisor git unzip curl libpq-dev libzip-dev zip libpng-dev libjpeg-dev libfreetype6-dev libicu-dev g++ \
-    && docker-php-ext-install pdo pdo_pgsql zip intl mbstring
+    nginx supervisor git unzip curl \
+    libpq-dev \
+    libzip-dev \
+    zlib1g-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libicu-dev \
+    libonig-dev \
+    pkg-config \
+    g++ \
+    && docker-php-ext-install \
+        pdo \
+        pdo_pgsql \
+        zip \
+        intl \
+        mbstring
 
 # RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/zz-docker.conf
 # RUN printf "[www]\nlisten = 127.0.0.1:9000\nclear_env = no\n" > /usr/local/etc/php-fpm.d/zz-docker.conf
