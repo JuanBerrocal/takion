@@ -5,8 +5,8 @@ FROM php:8.4.6-fpm AS build
 
 # Extensions needed for Symfony and composer
 RUN apt-get update && apt-get install -y \
-    git unzip curl libpq-dev libzip-dev zip libpng-dev libjpeg-dev libfreetype6-dev \
-    && docker-php-ext-install pdo pdo_pgsql zip
+    git unzip curl libpq-dev libzip-dev zip libpng-dev libjpeg-dev libfreetype6-dev libicu-dev g++ \
+    && docker-php-ext-install pdo pdo_pgsql zip intl mbstring
 
 # Installs composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -35,8 +35,8 @@ FROM php:8.4.6-fpm
 
 # Extensions needed for Symfony and composer
 RUN apt-get update && apt-get install -y \
-    nginx supervisor git unzip curl libpq-dev libzip-dev zip libpng-dev libjpeg-dev libfreetype6-dev \
-    && docker-php-ext-install pdo pdo_pgsql zip
+    nginx supervisor git unzip curl libpq-dev libzip-dev zip libpng-dev libjpeg-dev libfreetype6-dev libicu-dev g++ \
+    && docker-php-ext-install pdo pdo_pgsql zip intl mbstring
 
 # RUN echo "listen = 127.0.0.1:9000" >> /usr/local/etc/php-fpm.d/zz-docker.conf
 # RUN printf "[www]\nlisten = 127.0.0.1:9000\nclear_env = no\n" > /usr/local/etc/php-fpm.d/zz-docker.conf
@@ -72,7 +72,10 @@ COPY .docker/render/supervisor.conf /etc/supervisord.conf
 RUN rm /etc/nginx/sites-enabled/default || true
 
 # Gives permissions to www-data user (symfony) to the entire folder.
-RUN chown -R www-data:www-data /var/www/html \
+RUN mkdir -p var/cache/prod var/log \
+    && chown -R www-data:www-data var/cache var/log \
+    && chmod -R 775 var/cache var/log \
+    && chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
 # Expose port 80 to serve HTML (localhost)
