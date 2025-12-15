@@ -79,8 +79,12 @@ RUN chown -R www-data:www-data /var/www/html \
 USER www-data
 ENV APP_ENV=prod
 ENV APP_DEBUG=0
-RUN php bin/console cache:clear --no-warmup \
-    && php bin/console cache:warmup
+
+RUN APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear --no-warmup \
+    && APP_ENV=prod APP_DEBUG=0 php bin/console cache:warmup
+
+#RUN php bin/console cache:clear --no-warmup \
+#    && php bin/console cache:warmup
 USER root
 
 # No needed any longer.
