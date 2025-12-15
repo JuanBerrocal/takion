@@ -75,6 +75,14 @@ RUN rm /etc/nginx/sites-enabled/default || true
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
+# Preload symfony cache in production.
+USER www-data
+ENV APP_ENV=prod
+ENV APP_DEBUG=0
+RUN php bin/console cache:clear --no-warmup \
+    && php bin/console cache:warmup
+USER root
+
 # No needed any longer.
 # RUN  mkdir -p /var/www/html/var \
 #    && chown -R www-data:www-data /var/www/html/var \
