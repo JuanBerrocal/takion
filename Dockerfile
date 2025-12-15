@@ -62,7 +62,8 @@ COPY --from=build /app /var/www/html
 
 
 # Configuration for render/nginx/supervisor
-COPY .docker/render/www.conf /etc/php/8.4/fpm/pool.d/www.conf
+#COPY .docker/render/www.conf /etc/php/8.4/fpm/pool.d/www.conf
+COPY .docker/render/www.conf /usr/local/etc/php-fpm.d/www.conf
 COPY .docker/render/php.ini /usr/local/etc/php/conf.d/99-custom.ini
 COPY .docker/render/default.conf /etc/nginx/conf.d/default.conf
 COPY .docker/render/supervisor.conf /etc/supervisord.conf
