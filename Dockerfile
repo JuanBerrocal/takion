@@ -83,9 +83,7 @@ RUN printf "[www]\n\
 listen = 127.0.0.1:9000\n\
 clear_env = no\n\
 env[APP_ENV] = prod\n\
-env[APP_DEBUG] = 0\n\
-env[JWT_SECRET_KEY] = ${JWT_SECRET_KEY}\n\
-" > /usr/local/etc/php-fpm.d/zz-docker.conf
+env[APP_DEBUG] = 0\n" > /usr/local/etc/php-fpm.d/zz-docker.conf
 
 WORKDIR /var/www/html
 
