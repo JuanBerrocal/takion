@@ -38,7 +38,8 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
     public function supports(Request $request): ?bool
     {
         // Always checks the incoming requests.
-        return true;
+        return $request->cookies->has('authorization');
+        //return true;
     }
 
     
