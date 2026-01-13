@@ -45,14 +45,19 @@ class LoginFormAuthenticator extends AbstractAuthenticator  implements Authentic
     public function authenticate(Request $request): Passport
     {
         
-        $email = $request->getPayLoad()->get('user');
-        $password = $request->getPayLoad()->get('password');
+        $data = $request->toArray();
+
+        //$email = $request->getPayLoad()->get('user');
+        //$password = $request->getPayLoad()->get('password');
+        $email = $data['user'] ?? null;
+        $password = $data['password'] ?? null;
         
+        if (!$email || !$password) {
+            throw new BadRequestHttpException('Missing credentials');
+        }
+
         return new Passport( 
             new UserBadge($email),
-            /*new CustomCredentials(function ($credentials, TKUser $user) {
-                    return ($credentials ==='tata');
-                }, $password)*/
             new PasswordCredentials($password)
             );
         
