@@ -44,8 +44,15 @@ class LoginFormAuthenticator extends AbstractAuthenticator  implements Authentic
 
     public function authenticate(Request $request): Passport
     {
-        
+
+    /*  TEMPO */ 
+         try {
         $data = $request->toArray();
+    } catch (\Throwable $e) {
+        error_log('AUTH JSON ERROR: ' . $e->getMessage());
+        throw new BadRequestHttpException('Invalid JSON body');
+    }
+        //$data = $request->toArray();
 
         //$email = $request->getPayLoad()->get('user');
         //$password = $request->getPayLoad()->get('password');
