@@ -75,14 +75,15 @@ class LoginFormAuthenticator extends AbstractAuthenticator  implements Authentic
         //$password = $request->getPayLoad()->get('password');
 
          /** @var TKUser $user */
-        //$user = $token->getUser();
+        $user = $token->getUser();
+        $email = $user->getEmail();
         
         
-        $user = $this->userRepository->findOneBy(['email' => $email]);
+        /*$user = $this->userRepository->findOneBy(['email' => $email]);
         if (!$user) {
             throw new UserNotFoundException();
-        }
-        $email = $user->getEmail();
+        }*/
+        
 
         $myToken = 'Bearer ' . JWT::encode(
             ['email' => $email,
