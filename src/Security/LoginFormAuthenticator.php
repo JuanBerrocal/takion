@@ -71,14 +71,18 @@ class LoginFormAuthenticator extends AbstractAuthenticator  implements Authentic
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         // We set here the user, but this should be made in the background by the authenticate() method.
-        $email = $request->getPayLoad()->get('user');
-        $password = $request->getPayLoad()->get('password');
+        //$email = $request->getPayLoad()->get('user');
+        //$password = $request->getPayLoad()->get('password');
+
+         /** @var TKUser $user */
+        //$user = $token->getUser();
         
         
         $user = $this->userRepository->findOneBy(['email' => $email]);
         if (!$user) {
             throw new UserNotFoundException();
         }
+        $email = $user->getEmail();
 
         $myToken = 'Bearer ' . JWT::encode(
             ['email' => $email,
